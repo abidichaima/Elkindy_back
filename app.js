@@ -14,22 +14,19 @@ app.listen(4000, (err) => {
   }
 });
 
-mongoose
-  .connect("mongodb://localhost:27017/jwt", {
+
+
+ mongoose.connect('mongodb+srv://artweb:elkindy@elkindy.awubkgs.mongodb.net/', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("DB Connetion Successfull");
-  })
-  .catch((err) => {
-    console.log(err.message);
-  });
+  }).then(() => console.log('Connexion à MongoDB réussie !'))
+    .catch((error) => console.error('Connexion à MongoDB échouée !', error));
+  
 
 app.use(
   cors({
     origin: ["http://localhost:3000"],
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST","DELETE"],
     credentials: true,
   })
 );
