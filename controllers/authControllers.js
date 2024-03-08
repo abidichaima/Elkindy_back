@@ -1,6 +1,7 @@
-const User = require("../models/authModel");
+const User = require("../models/user").User;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const nodemailer = require("nodemailer");
 
 const maxAge = 3 * 24 * 60 * 60;
 const createToken = (id) => {
@@ -34,13 +35,55 @@ const handleErrors = (err) => {
 
   return errors;
 };
+
 module.exports.register = async (req, res, next) => {
   try {
-    const { email, password, firstName, lastName } = req.body;
-    const user = await User.create({ email, password, firstName, lastName });
+    const {  email, password, firstName, lastName , level ,phoneNumber , role   } = req.body;
+
+        const user = await User.create({ email, password, firstName, lastName , level ,phoneNumber , role  });
     const token = createToken(user._id);
 
     res.cookie("jwt", token, {
+      withCredentials: true,
+      httpOnly: false,
+      maxAge: maxAge * 1000,
+    });
+
+    res.status(201).json({ user: user._id, created: true });
+    console.log("Request body:", req.body);
+
+  } catch (err) { console.log("Error:", err.message); console.log("Request body:", req.body);
+    console.log("Request body:", req.body);
+
+    const errors = handleErrors(err);
+    res.json({ errors, created: false });
+  }
+};
+
+module.exports.addUser = async (req, res, next) => {
+  try {
+    const { email, password, firstName, lastName, level, phoneNumber, role, speciality } = req.body;
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await User.create({
+      email,
+      password: hashedPassword, // Save the hashed password
+      firstName,
+      lastName,
+      level,
+      phoneNumber,
+      role,
+      speciality,
+    });
+
+    const token = createToken(user._id);
+
+    // Do not include the password in the email content
+    sendWelcomeEmail(email, password);
+
+    res.cookie('jwt', token, {
       withCredentials: true,
       httpOnly: false,
       maxAge: maxAge * 1000,
@@ -54,6 +97,35 @@ module.exports.register = async (req, res, next) => {
   }
 };
 
+function sendWelcomeEmail(email,password) {
+  // Configure nodemailer with your email service credentials
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+            port: 587,
+            secure: false, // Set to false because we are using TLS
+            requireTLS: true, // Force TLS
+    auth: {
+      user: 'chaimaabidi1406@gmail.com',
+      pass: 'alfz uyju btme lofm',
+    },
+  });
+
+  // Email content
+  const mailOptions = {
+    from: 'chaimaabidi1406@gmail.com',
+    to: email,
+    subject: 'Welcome to Your App',
+    text: `Thank you for creating an account!\n\nYour email: ${email}\nYour password: ${password}`,  };
+
+  // Send the email
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log('Email could not be sent:', error.message);
+    } else {
+      console.log('Email sent:', info.response);
+    }
+  });
+}
 module.exports.login = async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -72,7 +144,8 @@ module.exports.getAllUsers = async (req, res) => {
     const users = await User.find();
     res.json(users);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error(err);
+    res.status(500).json({ error: "Failed to load users. Please check the server logs for more information." });
   }
 };
 
@@ -89,37 +162,33 @@ module.exports.getUserById = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
 module.exports.updateUser = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { email, password, firstName, lastName, role } = req.body;
+    const userId = req.body.id; // Assuming the user ID is passed in the request body
 
-    // Update only non-empty fields
-    const updateFields = {};
-    if (email) updateFields.email = email;
-    if (password) {
-      const salt = await bcrypt.genSalt();
-      updateFields.password = await bcrypt.hash(password, salt);
+    const user = await User.findById(userId);
+
+    if (!user) {
+      res.status(404).send("User not found");
+      return;
     }
-    if (firstName) updateFields.firstName = firstName;
-    if (lastName) updateFields.lastName = lastName;
-    if (role) updateFields.role = role;
 
-    const updatedUser = await User.findByIdAndUpdate(id, updateFields, {
-      new: true,
-    });
-
-    if (updatedUser) {
-      res.json(updatedUser);
-    } else {
-      res.status(404).json({ message: "User not found" });
+    // Update the fields based on the request body
+    for (const key in req.body) {
+      if (req.body.hasOwnProperty(key) && user[key] !== undefined) {
+        user[key] = req.body[key];
+      }
     }
+
+    await user.save();
+
+    console.log("User updated successfully:", user);
+    res.send("User updated successfully");
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    console.error("Error updating user:", err);
+    res.status(500).send("Internal Server Error");
   }
 };
-
 module.exports.deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
