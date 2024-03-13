@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Password is Required"],
   },
+  confirmPassword: { // Add this line to include confirmPassword field
+    type: String,
+
+  },
   role: {
     type: String,
     enum: ["admin", "teacher", "student"],
@@ -58,13 +62,23 @@ const userSchema = new mongoose.Schema({
 
   verified: { type: Boolean, default: false },
   speciality : [{ type: String }], // Array to store multiple specialties
+  image: {
+    public_id: {
+        type: String,
+    },
+    url: {
+        type: String,
+    }
 
+},
 
 });
 
 
 userSchema.methods.generateAuthToken = function () {
-	const token = jwt.sign({ _id: this._id }, process.env.JWTPRIVATEKEY, {
+	const token = jwt.sign({ _id: this._id ,  firstName: this.firstName,
+    lastName: this.lastName,
+    email: this.email, level : this.level , role : this.role , phoneNumber : this.phoneNumber , image: this.image}, process.env.JWTPRIVATEKEY, {
 		expiresIn: "7d",
 	});
 	return token;
@@ -73,15 +87,19 @@ userSchema.methods.generateAuthToken = function () {
 const User = mongoose.model("users", userSchema);
 
 const validate = (data) => {
-	const schema = Joi.object({
-		firstName: Joi.string().required().label("FirstName"),
-		lastName: Joi.string().required().label("LastName"),
-    phoneNumber: Joi.string().required().label("phoneNumber"),
-		email: Joi.string().email().required().label("email"),
-		password: passwordComplexity().required().label("password"),
+  const schema = Joi.object({
+    firstName: Joi.string().label("firstName"),
+    lastName: Joi.string().label("lastName"),
+    phoneNumber: Joi.string().label("phoneNumber"),
+    email: Joi.string().email().label("email"),
+    password: passwordComplexity().label("password"),
+    level: Joi.string().label("level"),
+    confirmPassword: Joi.string(), // Ensure confirmPassword is included in the schema
+    image: Joi.string(), // Ensure confirmPassword is included in the schema
+
     role: Joi.string().valid("admin", "teacher", "student").default("student").label("Role"),
   });
-	return schema.validate(data);
+  return schema.validate(data);
 };
 
 userSchema.pre("save", async function (next) {

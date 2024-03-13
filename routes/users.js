@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');  // Assurez-vous que cette ligne est prése
 const nodemailer = require("nodemailer");
 const {  getAllUsers, getUserById, updateUser, deleteUser, addUser } = require("../controllers/authControllers");
 
-router.post("/", async (req, res) => {
+router.post("/" ,async (req, res) => {
 	try {
 		const { error } = validate(req.body);
 		if (error)
@@ -121,5 +121,7 @@ router.post("/addUser", addUser);
 
 router.get("/users/:id", getUserById);
 router.put("/updateUser", updateUser);
+console.log('Received PUT request to /user/users/updateUser');
+
 router.delete("/deleteUser/:id", deleteUser);
 module.exports = router;

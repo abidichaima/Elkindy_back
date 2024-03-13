@@ -5,6 +5,7 @@ const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
+const bodyParser = require('body-parser');
 
 const app = express();
 
@@ -31,8 +32,9 @@ app.use(
 
 app.use(cookieParser());
 
-app.use(express.json());
+console.log(process.env.CLOUD_NAME, process.env.CLOUD_KEY, process.env.CLOUD_KEY_SECRET);
 
+app.use(express.json({ limit: '50mb' }));
 
 app.use("/user/users", userRoutes);
 app.use("/user/auth", authRoutes);

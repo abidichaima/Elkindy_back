@@ -2,6 +2,7 @@ const User = require("../models/user").User;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
+const cloudinary = require('../utils/cloudinary');
 
 const maxAge = 3 * 24 * 60 * 60;
 const createToken = (id) => {
@@ -38,32 +39,56 @@ const handleErrors = (err) => {
 
 module.exports.register = async (req, res, next) => {
   try {
-    const {  email, password, firstName, lastName , level ,phoneNumber , role   } = req.body;
+    const { email, password, firstName, lastName, level, phoneNumber ,        confirmPassword
+    } = req.body;
 
-        const user = await User.create({ email, password, firstName, lastName , level ,phoneNumber , role  });
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await User.create({
+      email,
+      password: hashedPassword, // Save the hashed password
+      firstName,
+      lastName,
+      level,
+      phoneNumber,
+  
+      confirmPassword,
+
+    
+    });
+
     const token = createToken(user._id);
 
-    res.cookie("jwt", token, {
+    // Do not include the password in the email content
+    sendWelcomeEmail(email, password);
+
+    res.cookie('jwt', token, {
       withCredentials: true,
       httpOnly: false,
       maxAge: maxAge * 1000,
     });
 
     res.status(201).json({ user: user._id, created: true });
-    console.log("Request body:", req.body);
+  
 
-  } catch (err) { console.log("Error:", err.message); console.log("Request body:", req.body);
-    console.log("Request body:", req.body);
-
+  } catch (err) {
+    console.log(err);
     const errors = handleErrors(err);
     res.json({ errors, created: false });
   }
 };
 
+
+
 module.exports.addUser = async (req, res, next) => {
   try {
-    const { email, password, firstName, lastName, level, phoneNumber, role, speciality } = req.body;
-
+    const { email, password, firstName, lastName, level, phoneNumber, role, speciality , image  } = req.body;
+    const result = await cloudinary.uploader.upload(image, {
+      folder: "products",
+      // width: 300,
+      // crop: "scale"
+    })
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -76,6 +101,10 @@ module.exports.addUser = async (req, res, next) => {
       phoneNumber,
       role,
       speciality,
+      image: {
+        public_id: result.public_id,
+        url: result.secure_url
+      }
     });
 
     const token = createToken(user._id);
@@ -162,13 +191,95 @@ module.exports.getUserById = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+exports.updateUser = async (req, res, next) => {
+  try {
+    const { firstName, lastName, email, phoneNumber, level, speciality, role, verified, image } = req.body;
+    console.log('avant updatedddd', req.body);
+    let imageDetails = {};
+    if (image) {
+      // Si une nouvelle image est fournie dans la requête, la télécharger vers Cloudinary
+      const uploadedImage = await cloudinary.uploader.upload(image, {
+        folder: 'products'
+      });
+      imageDetails = {
+        public_id: uploadedImage.public_id,
+        url: uploadedImage.secure_url
+      };
+    } else {
+      // Si aucune nouvelle image n'est fournie, récupérer les détails de l'image de l'utilisateur existant
+      const existingUser = await User.findById(req.params.id);
+      if (existingUser && existingUser.image) {
+        imageDetails = {
+          public_id: existingUser.image.public_id,
+          url: existingUser.image.url
+        };
+      }
+    }
+    console.log('en cours updatedddd', req.body);
+    const userId = req.body.id; // Assuming the user ID is passed in the request body
+
+    // Mettre à jour l'utilisateur en incluant les détails de l'image si disponibles
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        phoneNumber: phoneNumber,
+        level: level,
+        speciality: speciality,
+        role: role,
+        verified: verified,
+        image: imageDetails // Utiliser les détails de l'image récupérés
+      },
+    );
+    console.log('updatedddd', updatedUser);
+    console.log('id', userId);
+  
+
+    if (!updatedUser) {
+      // Si updatedUser est null, cela signifie que l'utilisateur n'a pas été trouvé
+      return res.status(404).json({ message: "Utilisateur non trouvé." });
+
+    }
+
+    // Si tout s'est bien passé, vous pouvez renvoyer l'utilisateur mis à jour
+    res.status(200).json({ message: 'Utilisateur modifié avec succès', user: updatedUser });
+  } catch (error) {
+    console.error('Error modifying user:', error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+/*
 module.exports.updateUser = async (req, res) => {
   try {
     const userId = req.body.id; // Assuming the user ID is passed in the request body
 
     const user = await User.findById(userId);
+    console.log("User found:", user);
 
+
+    // Update the image if provided
+    if (req.body.image !== null) {
+      const ImgId = user.image.public_id;
+      if (ImgId) {
+        await cloudinary.uploader.destroy(ImgId);
+      }
+      const result = await cloudinary.uploader.upload(req.body.image, {
+        folder: "products",
+        // width: 300,
+        // crop: "scale"
+      });
+      user.image = {
+        public_id: result.public_id,
+        url: result.secure_url
+      };
+    }
+
+   
     if (!user) {
+      console.log("User not found");
       res.status(404).send("User not found");
       return;
     }
@@ -189,6 +300,8 @@ module.exports.updateUser = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+*/
+
 module.exports.deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
