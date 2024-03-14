@@ -5,6 +5,8 @@ const mongoose = require("mongoose");
 const authRoutes = require("./routes/authRoutes");
 const cookieParser = require("cookie-parser");
 const questionRoute= require ('./routes/question');
+const quizzRoute= require ('./routes/quizz');
+
 const app = express();
 
 
@@ -27,6 +29,8 @@ app.use(cookieParser());
 app.use(express.json());
 app.use("/", authRoutes);
 app.use('/question',questionRoute);
+app.use('/quizz',quizzRoute);
+
 app.listen(4000, (err) => {
     if (err) {
       console.log(err);
