@@ -6,6 +6,7 @@ const authRoutes = require("./routes/authRoutes");
 const cookieParser = require("cookie-parser");
 const questionRoute= require ('./routes/question');
 const quizzRoute= require ('./routes/quizz');
+const resultRoute= require ('./routes/quizzResult');
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use(express.json());
 app.use("/", authRoutes);
 app.use('/question',questionRoute);
 app.use('/quizz',quizzRoute);
+app.use('/result',resultRoute);
 
 app.listen(4000, (err) => {
     if (err) {
