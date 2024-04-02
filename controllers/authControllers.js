@@ -133,3 +133,20 @@ module.exports.deleteUser = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+
+
+module.exports.getUsersByRole = async (req, res, next) => {
+  try {
+    const { role } = req.params;
+    const users = await User.find({ role: role });
+
+    if (!users.length) {
+      return next(errorHandler(404, `No users found with role ${role}`));
+    }
+
+    console.log(`Users with role ${role} retrieved`);
+    res.status(200).json(users);
+  } catch (error) {
+    next(error);
+  }
+};

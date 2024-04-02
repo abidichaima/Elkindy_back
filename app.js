@@ -2,6 +2,11 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/authRoutes");
+const courseRoutes = require("./routes/courseRoute");
+const lessonRoutes = require("./routes/lessonRoute");
+const freeTimeRoutes = require("./routes/freeTimeRoute");
+const holidayRoutes = require("./routes/holidaysRoute");
+
 const cookieParser = require("cookie-parser");
 
 const app = express();
@@ -25,8 +30,8 @@ app.listen(4000, (err) => {
 
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
-    methods: ["GET", "POST","DELETE"],
+    origin: "*",
+    methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
   })
 );
@@ -34,3 +39,21 @@ app.use(cookieParser());
 
 app.use(express.json());
 app.use("/", authRoutes);
+app.use('/api/course', courseRoutes);
+app.use('/api/lesson', lessonRoutes);
+app.use('/api/freeTime', freeTimeRoutes);
+app.use('/api/holiday', holidayRoutes);
+
+app.use((err, req, res, next) => {
+
+  console.error(err.stack);
+  res.status(500).json({ error: err.message });
+  
+  const statusCode = err.statusCode || 500;
+  const message = err.message || 'Internal Server Error';
+  return res.status(statusCode).json({
+    success: false,
+    statusCode,
+    message,
+  });
+});

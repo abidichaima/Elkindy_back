@@ -19,6 +19,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Password is Required"],
   },
+  freeTime: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'FreeTime'
+  }],
+  lessons: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Lesson' }] ,
+  role: {
+    type: String,
+    enum: ["admin", "teacher", "student"],
+    default: "student",
+  },
 });
 
 userSchema.pre("save", async function (next) {
@@ -39,4 +49,4 @@ userSchema.statics.login = async function (email, password) {
   throw Error("incorrect email");
 };
 
-module.exports = mongoose.model("Users", userSchema);
+module.exports = mongoose.model("User", userSchema);
