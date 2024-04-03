@@ -3,7 +3,7 @@ const Question = require('../models/Question');
 const Quizz = require('../models/Quizz');
 const Response = require('../models/Response');
 const QuizResult = require('../models/QuizResult');
-const User=require('../models/authModel');
+const User=require('../models/user');
 
 exports.addQuizResult = async (req, res) => {
   try {
