@@ -29,7 +29,8 @@
     "nodemailer": "^6.9.11",
     "nodemon": "^2.0.15",
     "passport": "^0.7.0",
-    "passport-google-oauth20": "^2.0.0"
+    "passport-google-oauth20": "^2.0.0",
+    "qrcode": "^1.5.3"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

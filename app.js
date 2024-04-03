@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -8,6 +9,10 @@ const lessonRoutes = require("./routes/lessonRoute");
 const freeTimeRoutes = require("./routes/freeTimeRoute");
 const holidayRoutes = require("./routes/holidaysRoute");
 
+const questionRoute= require ('./routes/question');
+const quizzRoute= require ('./routes/quizz');
+const resultRoute= require ('./routes/quizzResult');
+
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const bodyParser = require('body-parser');
@@ -15,6 +20,9 @@ const passport = require("passport");
 const passportStrategy = require("./passport");
 const cookieSession = require("cookie-session");
 const session = require('express-session');
+const questionRoute= require ('./routes/question');
+const quizzRoute= require ('./routes/quizz');
+const resultRoute= require ('./routes/quizzResult');
 
 const app = express();
 
@@ -30,6 +38,7 @@ mongoose.connect('mongodb+srv://artweb:elkindy@elkindy.awubkgs.mongodb.net/', {
     useUnifiedTopology: true,
   }).then(() => console.log('Connexion à MongoDB réussie !'))
     .catch((error) => console.error('Connexion à MongoDB échouée !', error));
+  
 
 app.use(
   cors({
@@ -121,7 +130,9 @@ app.use("/api",paymentRouter)
 app.use('/tickets', ticketsRoute);
 app.use('/events', eventsRoute);
 app.use('/comment', commentRoute);
-
+app.use('/question',questionRoute);
+app.use('/quizz',quizzRoute);
+app.use('/result',resultRoute);
 app.get('/', (req, res) => {
   res.send('Hello, World!');
 });
@@ -134,4 +145,17 @@ app.use(errorHandler);
 app.listen(port, ()=>{
     console.log(`App is running on port ${port}`);
 })*/
+
+app.use('/question',questionRoute);
+app.use('/quizz',quizzRoute);
+app.use('/result',resultRoute);
+
+app.listen(4000, (err) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Server Started Successfully.");
+    }
+  });
+  
 module.exports = app;
