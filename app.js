@@ -20,19 +20,9 @@ const passport = require("passport");
 const passportStrategy = require("./passport");
 const cookieSession = require("cookie-session");
 const session = require('express-session');
-const questionRoute= require ('./routes/question');
-const quizzRoute= require ('./routes/quizz');
-const resultRoute= require ('./routes/quizzResult');
 
 const app = express();
 
-app.listen(4000, (err) => {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log("Server Started Successfully.");
-  }
-});
 mongoose.connect('mongodb+srv://artweb:elkindy@elkindy.awubkgs.mongodb.net/', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -109,12 +99,7 @@ const ticketsRoute = require('./routes/tickets');
 const commentRoute = require('./routes/commentRoutes');
 
 
-// CONNECT DATABASE
-mongoose.connect('mongodb+srv://artweb:elkindy@elkindy.awubkgs.mongodb.net/', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}).then(() => console.log('Connexion à MongoDB réussie !'))
-  .catch((error) => console.error('Connexion à MongoDB échouée !', error));
+
   
 
 // MIDDLEWARE
