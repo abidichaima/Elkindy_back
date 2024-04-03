@@ -1,3 +1,4 @@
+
 const router = require("express").Router();
 const { User } = require("../models/user");
 const Token = require("../models/token");
@@ -5,6 +6,8 @@ const crypto = require("crypto");
 const sendEmail = require("../utils/sendEmail");
 const bcrypt = require("bcrypt");
 const Joi = require("joi");
+const passport = require("passport");
+const session = require('express-session');
 
 // The routes should use the correct HTTP methods (e.g., GET, POST, PUT, DELETE)
 router.post("/", async (req, res) => {
@@ -67,4 +70,11 @@ const secretKey = crypto.randomBytes(64).toString('hex');
 console.log(secretKey);
 
 
+router.get(
+	"/auth/google/callback",
+	passport.authenticate("google", {
+		successRedirect: process.env.CLIENT_URL,
+		failureRedirect: "/404",
+	})
+);
 module.exports = router;

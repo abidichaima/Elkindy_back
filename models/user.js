@@ -84,6 +84,24 @@ userSchema.methods.generateAuthToken = function () {
 	return token;
 };
 
+
+userSchema.methods.generateNewToken = function() {
+  const refreshToken  = jwt.sign({ 
+      _id: this._id,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      email: this.email,
+      level: this.level,
+      role: this.role,
+      phoneNumber: this.phoneNumber,
+      image: this.image
+  }, process.env.JWTPRIVATEKEY, {
+      expiresIn: "7d",
+  });
+  return refreshToken ;
+};
+
+
 const User = mongoose.model("users", userSchema);
 
 const validate = (data) => {

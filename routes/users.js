@@ -22,8 +22,9 @@ router.post("/" ,async (req, res) => {
 
 		const salt = await bcrypt.genSalt(Number(process.env.SALT));
 		const hashPassword = await bcrypt.hash(req.body.password, salt);
+		const hashConfirmPassword = await bcrypt.hash(req.body.confirmPassword, salt);
 
-		user = await new User({ ...req.body, password: hashPassword }).save();
+		user = await new User({ ...req.body, password: hashPassword , confirmPassword : hashConfirmPassword }).save();
 
 		const token = await new Token({
 			userId: user._id,
@@ -116,8 +117,47 @@ router.post('/reset-password/:id/:token', (req, res) => {
         }
     })
 })
+
+
+// Middleware pour vérifier le refresh token
+const verifyRefreshToken = (req, res, next) => {
+	const refreshToken = req.body.refreshToken;
+  
+	// Vérifier si le refresh token est valide
+	jwt.verify(refreshToken, 'refreshSecret', (err, decoded) => {
+	  if (err) {
+		return res.status(403).json({ message: 'Refresh token invalide' });
+	  }
+	  req.decoded = decoded;
+	  next();
+	});
+  };
+  
+  // Route pour rafraîchir le token d'accès
+  router.post('/refresh', verifyRefreshToken, (req, res) => {
+	// Générer un nouveau token d'accès
+	const user = req.decoded;
+	const accessToken = jwt.sign({ id: user.id }, 'accessSecret', { expiresIn: '1500000m' });
+  
+	// Envoyer le nouveau token d'accès au client
+	res.status(200).json({ accessToken });
+  });
+
+  router.get('/search/:email', async (req, res) => {
+	try {
+	  const email = req.params.email; // Récupérer l'e-mail de l'URL
+	  const users = await User.find({ email: { $regex: email, $options: 'i' } });
+	  res.json(users); // Renvoyer les résultats de la recherche
+	} catch (error) {
+	  console.error('Error searching users:', error);
+	  res.status(500).json({ error: 'Internal server error' });
+	}
+  });
+  
+
 router.get("/getAllUsers", getAllUsers);
 router.post("/addUser", addUser);
+
 
 router.get("/users/:id", getUserById);
 router.put("/updateUser", updateUser);
