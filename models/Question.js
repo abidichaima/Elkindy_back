@@ -9,7 +9,8 @@ const questionSchema = mongoose.Schema({
     },
     required: false
   },
-  responses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Response' }]
+  responses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Response' }],
+  point: { type: Number, required: true },
  
 });
 

@@ -7,7 +7,8 @@ const quizzSchema = mongoose.Schema({
   duree: { type: Number, required: true },
   dateDebut: { type: Date, required: true },
   dateFin: { type: Date, required: true },
-  level: { type: String }
+  level: { type: String },
+  tentative : { type: Number, required: true }
 });
 
 module.exports = mongoose.model('Quizz', quizzSchema);

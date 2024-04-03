@@ -9,5 +9,4 @@ router.get('/showall', questionController.getAllQuestion);
 router.get('/show/:id', questionController.getQuestion);
 router.put('/update/:id', questionController.modifyQuestion);
 router.delete('/delete/:id', questionController.deleteQuestion);
-
 module.exports = router;

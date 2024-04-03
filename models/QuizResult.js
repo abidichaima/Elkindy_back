@@ -21,14 +21,14 @@ const quizResultSchema = new mongoose.Schema({
       ref: 'Question', 
       required: true
     },
-    userAnswer: {
-      type: mongoose.Schema.Types.Mixed, 
+    selectedOptions : [{
+      type: String,
       required: true
-    },
-    isCorrect: {
+    }],
+    /*isCorrect: {
       type: Boolean,
       required: true
-    }
+    }*/
   }],
   date: {
     type: Date,
