@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
     const lessonSchema = new mongoose.Schema({
-        teacher: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-        students: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+        teacher: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
+        students: [{ type: mongoose.Schema.Types.ObjectId, ref: 'users' }],
         startLessonDate: { type: Date, required: true },
         endLessonDate: { type: Date, required: true },
         course: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },

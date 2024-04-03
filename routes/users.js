@@ -165,6 +165,6 @@ console.log('Received PUT request to /user/users/updateUser');
 
 router.delete("/deleteUser/:id", deleteUser);
 
-router.get('/users/role/:role', getUsersByRole);
+router.get('/role/:role', getUsersByRole);
 
 module.exports = router;

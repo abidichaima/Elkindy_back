@@ -2,7 +2,7 @@
 
 const FreeTime = require("../models/freeTimeModel.js");
 const errorHandler = require("../utils/error.js");
-const User = require("../models/authModel");
+const User = require("../models/user.js");
 
 module.exports.createFreeTime = async (req, res, next) => {
   try {

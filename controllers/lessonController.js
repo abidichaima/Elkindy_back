@@ -1,6 +1,6 @@
 const Lesson = require("../models/lessonModel.js");
 const errorHandler = require("../utils/error.js");
-const User = require("../models/authModel");
+const User = require("../models/user.js");
 const { default: mongoose } = require("mongoose");
 
 

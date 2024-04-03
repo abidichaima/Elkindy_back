@@ -113,7 +113,7 @@ userSchema.methods.generateNewToken = function() {
 };
 
 
-const User = mongoose.model("users", userSchema);
+
 
 const validate = (data) => {
   const schema = Joi.object({
@@ -136,5 +136,5 @@ userSchema.pre("save", async function (next) {
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
-
+const User = mongoose.model("users", userSchema);
 module.exports = { User, validate };
