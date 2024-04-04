@@ -6,6 +6,7 @@ const qr = require('qrcode');
 const fs = require('fs');
 const path = require('path');
 const { log } = require('console');
+const QuizResult = require('../models/QuizResult');
 
 exports.createQuizz = async (req, res, next) => {
   try {
@@ -67,9 +68,11 @@ exports.getAllQuizz = (req, res, next) => {
 exports.deleteQuizz = async (req, res, next) => {
   try {
     const quizz = await Quizz.findOne({ _id: req.params.id });
+    await QuizResult.deleteMany({ quizId: quizz._id });
+
     await Quizz.deleteOne({ _id: quizz._id });
-    
-    res.status(200).json({ message: 'Quizz  deleted' });
+
+    res.status(200).json({ message: 'Quiz deleted along with its results' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

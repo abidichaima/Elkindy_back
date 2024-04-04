@@ -5,8 +5,9 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js"
-  },
+    "start": "nodemon app.js",
+    "build": "yarn run", 
+    "build-dev": "yarn build"  },
   "keywords": [],
   "author": "",
   "license": "ISC",

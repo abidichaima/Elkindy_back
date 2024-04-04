@@ -65,23 +65,19 @@ router.get('/:id', async (req, res, next) => {
   //get by user id 
   router.get('/user/:id', async (req, res, next) => {
     try {
-      const id = req.params.id;
-      const tickets = await Tickets.find({ user_id: id });
-  
-      if (!tickets || tickets.length === 0) {
-        res.status(404).send("No tickets found for the specified event");
-        return;
-      }
-  
-      res.status(200).json({
-        success: true,
-        tickets
-      });
+        const id = req.params.id;
+        const tickets = await Tickets.find({ user_id: id });
+
+        if (!tickets || tickets.length === 0) {
+            return res.status(404).json({ success: false, message: "No tickets found for the specified user ID" });
+        }
+
+        return res.status(200).json({ success: true, tickets });
     } catch (error) {
-      console.log(error);
-      next(error);
+        console.error(error);
+        return res.status(500).json({ success: false, message: "Internal Server Error" });
     }
-  });
+});
   
   //ADD
 
@@ -137,3 +133,16 @@ router.get('/:id', async (req, res, next) => {
       next(error);
     }
   });
+  router.delete('/delete', async (req, res, next) => {
+    try {
+        const lastCreatedTicket = await Tickets.findOne().sort({ createdAt: -1 });
+        if (!lastCreatedTicket) {
+            return res.status(404).json({ success: false, message: "No tickets found" });
+        }
+        await Tickets.deleteOne({ _id: lastCreatedTicket._id });
+        return res.status(200).json({ success: true, message: "Last created ticket deleted successfully" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+});

@@ -122,7 +122,6 @@ const validate = (data) => {
     phoneNumber: Joi.string().label("phoneNumber"),
     email: Joi.string().email().label("email"),
     password: passwordComplexity().label("password"),
-    level: Joi.string().label("level"),
     confirmPassword: Joi.string(), // Ensure confirmPassword is included in the schema
     image: Joi.string(), // Ensure confirmPassword is included in the schema
 
