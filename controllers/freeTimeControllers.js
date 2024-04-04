@@ -2,8 +2,7 @@
 
 const FreeTime = require("../models/freeTimeModel.js");
 const errorHandler = require("../utils/error.js");
-const User = require("../models/user.js");
-
+const User = require("../models/user").User;
 module.exports.createFreeTime = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.userId);

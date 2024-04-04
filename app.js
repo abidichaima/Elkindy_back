@@ -9,9 +9,7 @@ const lessonRoutes = require("./routes/lessonRoute");
 const freeTimeRoutes = require("./routes/freeTimeRoute");
 const holidayRoutes = require("./routes/holidaysRoute");
 
-const questionRoute= require ('./routes/question');
-const quizzRoute= require ('./routes/quizz');
-const resultRoute= require ('./routes/quizzResult');
+
 
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
@@ -26,19 +24,7 @@ const resultRoute= require ('./routes/quizzResult');
 
 const app = express();
 
-app.listen(4000, (err) => {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log("Server Started Successfully.");
-  }
-});
-mongoose.connect('mongodb+srv://artweb:elkindy@elkindy.awubkgs.mongodb.net/', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }).then(() => console.log('Connexion à MongoDB réussie !'))
-    .catch((error) => console.error('Connexion à MongoDB échouée !', error));
-  
+
 
 app.use(
   cors({

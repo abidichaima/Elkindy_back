@@ -1,8 +1,7 @@
 const Lesson = require("../models/lessonModel.js");
 const errorHandler = require("../utils/error.js");
-const User = require("../models/user.js");
 const { default: mongoose } = require("mongoose");
-
+const User = require("../models/user").User;
 
 
 module.exports.createLesson = async (req, res, next) => {
@@ -89,7 +88,7 @@ module.exports.getLessonById = async (req, res, next) => {
   }
 };
 
-module.exports.getLessonByTeacherName = async (req, res, next) => {
+module.exports.getLessonByTeacher = async (req, res, next) => {
   try {
     const id = req.header('teacher');
     User.findById(id)
