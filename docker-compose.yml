@@ -21,5 +21,4 @@ services:
     depends_on:
       - db
     volumes:
-      - type: volume
-        source: mongo-data
+      - mongo-data:/path/to/mount/point
