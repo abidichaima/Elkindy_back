@@ -8,7 +8,7 @@ const Tickets = new Schema(
             required: true,
         },
         user_id: {
-            type: Schema.Types.ObjectId,
+            type: String, // Add the 'type' property here
             required: true,
         },
         number: {
