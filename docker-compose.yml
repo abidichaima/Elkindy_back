@@ -21,4 +21,5 @@ services:
     depends_on:
       - db
     volumes:
-      - mongo-data:
+      - type: volume
+        source: mongo-data
