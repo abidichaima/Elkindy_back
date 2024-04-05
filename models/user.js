@@ -55,9 +55,6 @@ const userSchema = new mongoose.Schema({
   level: {
     type: String,
     
-
-
- 
   },
 
   verified: { type: Boolean, default: false },
@@ -95,7 +92,7 @@ userSchema.methods.generateAuthToken = function () {
 	return token;
 };
 
-
+/*
 userSchema.methods.generateNewToken = function() {
   const refreshToken  = jwt.sign({ 
       _id: this._id,
@@ -112,13 +109,14 @@ userSchema.methods.generateNewToken = function() {
   return refreshToken ;
 };
 
-
+*/
 
 
 const validate = (data) => {
   const schema = Joi.object({
     firstName: Joi.string().label("firstName"),
     lastName: Joi.string().label("lastName"),
+    level: Joi.string().label("level"),
     phoneNumber: Joi.string().label("phoneNumber"),
     email: Joi.string().email().label("email"),
     password: passwordComplexity().label("password"),
@@ -130,10 +128,13 @@ const validate = (data) => {
   return schema.validate(data);
 };
 
-userSchema.pre("save", async function (next) {
+/*userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    return next(); // Si le mot de passe n'a pas été modifié, passez à la prochaine middleware
+  }
   const salt = await bcrypt.genSalt();
   this.password = await bcrypt.hash(this.password, salt);
   next();
-});
+});*/
 const User = mongoose.model("users", userSchema);
 module.exports = { User, validate };
