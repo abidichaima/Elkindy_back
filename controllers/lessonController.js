@@ -75,6 +75,16 @@ module.exports.deleteLesson = async (req, res, next) => {
   }
 };
 
+module.exports.deleteAlllessons = async (req, res, next) => {
+  try {
+    await Lesson.deleteMany();
+    console.log("All lessons deleted");
+    res.status(200).json("All lessons have been deleted!");
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports.getLessonById = async (req, res, next) => {
   try {
     const lesson = await Lesson.findById(req.params.id);

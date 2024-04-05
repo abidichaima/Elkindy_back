@@ -1,5 +1,5 @@
 const express = require("express");
-const { createLesson, updateLesson, getLesson, deleteLesson ,getAllLessons,getLessonByTeacher} = require("../controllers/lessonController");
+const { createLesson, updateLesson, getLesson, deleteLesson ,getAllLessons,getLessonByTeacher,deleteAlllessons} = require("../controllers/lessonController");
 
 
 const router = express.Router();
@@ -11,5 +11,5 @@ router.get('/get/:id',getLesson)
 router.get('/get', getAllLessons)
 router.get('/getByTeacher/', getLessonByTeacher)
 
-
+router.delete('/deleteAlllessons/', deleteAlllessons)
 module.exports = router;
