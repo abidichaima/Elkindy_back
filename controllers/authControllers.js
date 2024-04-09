@@ -6,6 +6,7 @@ const cloudinary = require('../utils/cloudinary');
 const sendEmail = require("../utils/sendEmail");
 const Token = require("../models/token");
 const crypto = require("crypto");
+const  QuizResult= require("../models/QuizResult");
 
 const maxAge = 3 * 24 * 60 * 60;
 const createToken = (id) => {
@@ -81,8 +82,57 @@ module.exports.register = async (req, res, next) => {
     res.json({ errors, created: false });
   }
 };
+/*
+module.exports.register = async (req, res, next) => {
+  try {
+    const { email, password, firstName, lastName, level, phoneNumber, confirmPassword } = req.body;
 
+    // Check if any required fields are missing
+    if (!email || !password || !firstName || !lastName || !level || !phoneNumber || !confirmPassword) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
 
+    // Check if passwords match
+    if (password !== confirmPassword) {
+      return res.status(400).json({ error: "Passwords do not match" });
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedConfirmPassword = await bcrypt.hash(confirmPassword, 10);
+
+    // Save user data (excluding confirmPassword)
+    const user = await User.create({
+      email,
+      password: hashedPassword,
+      firstName,
+      lastName,
+      level,
+      phoneNumber,
+      confirmPassword:hashedConfirmPassword,
+    });
+
+    const token = createToken(user._id);
+
+    // Do not include the password in the email content
+    sendWelcomeEmail(email, password);
+
+    // Set JWT token in cookie
+    res.cookie('jwt', token, {
+      withCredentials: true,
+      httpOnly: false,
+      maxAge: maxAge * 1000,
+    });
+
+    // Return success response
+    res.status(201).json({ user: user._id, created: true });
+  } catch (err) {
+    console.log(err);
+    const errors = handleErrors(err);
+    res.json({ errors, created: false });
+  }
+};
+*/
 
 module.exports.addUser = async (req, res, next) => {
   try {
@@ -350,8 +400,12 @@ module.exports.updateUser = async (req, res) => {
 module.exports.deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
+    await QuizResult.deleteMany({ userId: id });
+
     const deletedUser = await User.findByIdAndDelete(id);
+
     if (deletedUser) {
+      
       res.json({ message: "User deleted successfully" });
     } else {
       res.status(404).json({ message: "User not found" });

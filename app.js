@@ -10,6 +10,10 @@ const freeTimeRoutes = require("./routes/freeTimeRoute");
 const holidayRoutes = require("./routes/holidaysRoute");
 
 
+const questionRoute= require ('./routes/question');
+const quizzRoute= require ('./routes/quizz');
+const resultRoute= require ('./routes/quizzResult');
+
 
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
@@ -18,19 +22,17 @@ const passport = require("passport");
 const passportStrategy = require("./passport");
 const cookieSession = require("cookie-session");
 const session = require('express-session');
+const questionRoute= require ('./routes/question');
+const quizzRoute= require ('./routes/quizz');
+const resultRoute= require ('./routes/quizzResult');
 
 const app = express();
 
-mongoose.connect('mongodb+srv://artweb:elkindy@elkindy.awubkgs.mongodb.net/', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }).then(() => console.log('Connexion à MongoDB réussie !'))
-    .catch((error) => console.error('Connexion à MongoDB échouée !', error));
-  
+
 
 app.use(
   cors({
-    origin: "*",
+    origin: 'http://localhost:3000',
     methods: ["GET", "POST",  "DELETE", "PUT", "OPTIONS", "PUT"],
     credentials: true,
   })
@@ -97,7 +99,12 @@ const ticketsRoute = require('./routes/tickets');
 const commentRoute = require('./routes/commentRoutes');
 
 
-
+// CONNECT DATABASE
+mongoose.connect('mongodb+srv://artweb:elkindy@elkindy.awubkgs.mongodb.net/', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(() => console.log('Connexion à MongoDB réussie !'))
+  .catch((error) => console.error('Connexion à MongoDB échouée !', error));
   
 
 // MIDDLEWARE
