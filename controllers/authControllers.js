@@ -407,6 +407,7 @@ module.exports.deleteUser = async (req, res) => {
     if (deletedUser) {
       
       res.json({ message: "User deleted successfully" });
+      
     } else {
       res.status(404).json({ message: "User not found" });
     }
