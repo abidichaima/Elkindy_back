@@ -6,7 +6,7 @@ const sendEmail = require("../utils/sendEmail");
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');  // Assurez-vous que cette ligne est présente
 const nodemailer = require("nodemailer");
-const {  getAllUsers, getUserById, updateUser, deleteUser, addUser,getUsersByRole } = require("../controllers/authControllers");
+const {  getAllUsers, getUserById, updateUser, deleteUser, addUser,getUsersByRole  , google} = require("../controllers/authControllers");
 
 router.post("/" ,async (req, res) => {
 	try {
@@ -162,6 +162,7 @@ router.post("/addUser", addUser);
 router.get("/users/:id", getUserById);
 router.put("/updateUser", updateUser);
 console.log('Received PUT request to /user/users/updateUser');
+router.post('/google', google);
 
 router.delete("/deleteUser/:id", deleteUser);
 

@@ -432,3 +432,64 @@ module.exports.getUsersByRole = async (req, res, next) => {
     next(error);
   }
 };
+
+//api google 
+
+module.exports.google = async (req, res, next) => {
+  try {
+    // Vérification de JWT_SECRET
+    if (!process.env.JWTPRIVATEKEY) {
+      return res.status(500).json({ error: 'JWT_SECRET is not defined' });
+    }
+    const existingUser = await User.findOne({ email: req.body.email });
+    if (existingUser) {
+      return res.status(400).json({ error: 'Email already in use' }); // Email already exists
+    }
+
+    const user = await User.findOne({ email: req.body.email });
+    if (user) {
+      const token = jwt.sign({ id: user._id }, process.env.JWTPRIVATEKEY);
+      const { password: hashedPassword, ...rest } = user._doc;
+      const expiryDate = new Date(Date.now() + 3600000); // 1 hour
+      res
+        .cookie('jwt', token, {
+          httpOnly: true,
+          expires: expiryDate,
+        })
+        .status(200)
+        .json(rest);
+    } else {
+      const generatedPassword =
+        Math.random().toString(36).slice(-8) +
+        Math.random().toString(36).slice(-8);
+      const hashedPassword = bcrypt.hashSync(generatedPassword, 10);
+      const newUser = new User({
+        username:
+          req.body.name.split(' ').join('').toLowerCase() +
+          Math.random().toString(36).slice(-8),
+        email: req.body.email,
+        verified: true, // Ajouter le champ verified et le définir sur true
+
+        password: hashedPassword,
+        profilePicture: req.body.photo,
+      });
+      await newUser.save();
+      sendWelcomeEmail(req.body.email, generatedPassword); // Send generated password in email
+
+      const token = jwt.sign({ id: newUser._id }, process.env.JWTPRIVATEKEY);
+      const { password: hashedPassword2, ...rest } = newUser._doc;
+      const expiryDate = new Date(Date.now() + 3600000); // 1 hour
+      res
+        .cookie('jwt', token, {
+          httpOnly: true,
+          expires: expiryDate,
+        })
+        .status(200)
+        .json(rest);
+    }
+  } catch (error) {
+    next(error);
+  }
+
+  
+};
