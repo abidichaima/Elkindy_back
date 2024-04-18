@@ -67,19 +67,19 @@ const userSchema = new mongoose.Schema({
         type: String,
     }
 
-},
-//sami
-freeTime: [{
-  type: mongoose.Schema.Types.ObjectId,
-  ref: 'FreeTime'
-}],
-lessons: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Lesson' }] ,
-role: {
-  type: String,
-  enum: ["admin", "teacher", "student"],
-  default: "student",
-},
-//end sami
+  },
+  //sami
+  freeTime: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'FreeTime'
+  }],
+  lessons: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Lesson' }] ,
+  role: {
+    type: String,
+    enum: ["admin", "teacher", "student"],
+    default: "student",
+  },
+  //end sami
 });
 
 
