@@ -18,9 +18,7 @@ const passport = require("passport");
 const passportStrategy = require("./passport");
 const cookieSession = require("cookie-session");
 const session = require('express-session');
-const questionRoute= require ('./routes/question');
-const quizzRoute= require ('./routes/quizz');
-const resultRoute= require ('./routes/quizzResult');
+
 
 const app = express();
 
@@ -132,9 +130,6 @@ app.listen(port, ()=>{
     console.log(`App is running on port ${port}`);
 })*/
 
-app.use('/question',questionRoute);
-app.use('/quizz',quizzRoute);
-app.use('/result',resultRoute);
 
 app.listen(4000, (err) => {
     if (err) {

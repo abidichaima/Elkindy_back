@@ -7,15 +7,12 @@ const passwordComplexity = require("joi-password-complexity");
 const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
-    required: [true, "First Name is Required"],
   },
   lastName: {
     type: String,
-    required: [true, "Last Name is Required"],
   },
   email: {
     type: String,
-    required: [true, "Email is Required"],
     unique: true,
     validate: {
       validator: function(value) {
@@ -28,7 +25,6 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, "Password is Required"],
   },
   confirmPassword: { // Add this line to include confirmPassword field
     type: String,
@@ -42,7 +38,6 @@ const userSchema = new mongoose.Schema({
 
   phoneNumber: {
     type: String,
-    required: [true, "Phone Number is Required"],
     validate: {
       validator: function(value) {
         // You can use a regular expression for basic phone number format validation
@@ -67,19 +62,19 @@ const userSchema = new mongoose.Schema({
         type: String,
     }
 
-},
-//sami
-freeTime: [{
-  type: mongoose.Schema.Types.ObjectId,
-  ref: 'FreeTime'
-}],
-lessons: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Lesson' }] ,
-role: {
-  type: String,
-  enum: ["admin", "teacher", "student"],
-  default: "student",
-},
-//end sami
+  },
+  //sami
+  freeTime: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'FreeTime'
+  }],
+  lessons: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Lesson' }] ,
+  role: {
+    type: String,
+    enum: ["admin", "teacher", "student"],
+    default: "student",
+  },
+  //end sami
 });
 
 

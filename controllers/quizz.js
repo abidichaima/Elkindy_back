@@ -8,7 +8,7 @@ const path = require('path');
 const { log } = require('console');
 const QuizResult = require('../models/QuizResult');
 
-exports.createQuizz = async (req, res, next) => {
+/*exports.createQuizz = async (req, res, next) => {
   try {
     const { titre, description, duree, dateDebut, dateFin,level ,questions,tentative } = req.body;
     console.log(req.body.questions);
@@ -20,7 +20,53 @@ exports.createQuizz = async (req, res, next) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+};*/
+exports.createQuizz = async (req, res, next) => {
+  try {
+    const { titre, description, duree, dateDebut, dateFin, level, questions, tentative } = req.body;
+    console.log(req.body.questions);
+    const selectedQuestionIds = questions.map(question => mongoose.Types.ObjectId(question.value));
+    console.log(selectedQuestionIds);
+    
+    let totals = 0; // Initialiser total à zéro
+
+    for (const questionId of selectedQuestionIds) {
+      const question = await Question.findById(questionId);
+      if (question) {
+        console.log("question.point", question.point);
+        totals += question.point;
+        console.log("totalPoints", totals);
+      }
+    }
+
+    console.log('Total points before validation:', totals);
+
+    // Créer le quiz avec la somme des points calculée
+    const quizz = new Quizz({
+      titre,
+      description,
+      duree,
+      dateDebut,
+      dateFin,
+      level,
+      questions: selectedQuestionIds,
+      tentative,
+      total: totals
+    });
+
+    const savedQuizz = await quizz.save();
+    res.status(201).json({ message: 'Quizz créé avec succès', quizz: savedQuizz });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
+
+
+
+
+
+
+
 
 exports.QrCode = async (req, res, next) => {
   try {
@@ -109,8 +155,9 @@ exports.getQuizz = async (req, res, next) => {
       dateFin: quizz.dateFin,
       questions: formattedQuestions,
       tentative:quizz.tentative,
+      total:quizz.total,
     };
-
+console.log(quizz);
     res.status(200).json({ message: 'Quizz retrieved successfully', quizz: quizzz });
   } catch (error) {
     res.status(500).json({ error: error.message });

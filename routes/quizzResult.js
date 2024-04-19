@@ -8,5 +8,7 @@ router.get('/show/:id', ResultController.getQuizResultsById);
 router.get('/user/:userId/quiz/:quizId',ResultController.getQuizUser),
 router.delete('/all',ResultController.deleteAllResults),
 router.delete('/delete/:id',ResultController.deleteRes),
+router.get('/grade/:grade',ResultController.getQuizResultsByGradeLevel),
+
 
 module.exports = router;

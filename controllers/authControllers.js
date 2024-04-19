@@ -431,3 +431,31 @@ module.exports.getUsersByRole = async (req, res, next) => {
     next(error);
   }
 };
+
+  module.exports.getUsersBySpeciality = async (req, res, next) => {
+    const { speciality } = req.params;
+    try {
+      const users = await User.find({ speciality: speciality });
+      if (!users.length) {
+        return res.status(404).json({ error: `No users found with speciality ${speciality}` });
+      }
+      console.log(`Users with speciality ${speciality} retrieved`);
+      res.status(200).json(users);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  module.exports.getUsersByLevel = async (req, res, next) => {
+    const { level } = req.params;
+    try {
+      const users = await User.find({ level: level });
+      if (!users.length) {
+        return res.status(404).json({ error: `No users found with level ${level}` });
+      }
+      console.log(`Users with level ${level} retrieved`);
+      res.status(200).json(users);
+    } catch (error) {
+      next(error);
+    }
+  };

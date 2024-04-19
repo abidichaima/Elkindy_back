@@ -104,7 +104,7 @@ module.exports.getLessonByTeacher = async (req, res, next) => {
     User.findById(id)
       .populate('lessons')
       .then(user => {
-        console.log(user);
+      //  console.log(user);
         Lesson.find({teacher:user._id})
           .populate({
             path: 'students',
