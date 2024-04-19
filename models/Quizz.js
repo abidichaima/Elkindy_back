@@ -5,6 +5,7 @@ const quizzSchema = mongoose.Schema({
   description: { type: String, required: true },
   questions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Question' }],
   duree: { type: Number, required: true },
+  total: { type: Number, required: false },
   dateDebut: { type: Date, required: true },
   dateFin: { type: Date, required: true },
   level: { type: String },
