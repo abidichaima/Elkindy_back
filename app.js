@@ -5,6 +5,8 @@ const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
 const courseRoutes = require("./routes/courseRoute");
+const classroomRoutes = require("./routes/classroomRoute.js");
+
 const lessonRoutes = require("./routes/lessonRoute");
 const freeTimeRoutes = require("./routes/freeTimeRoute");
 const holidayRoutes = require("./routes/holidaysRoute");
@@ -62,6 +64,8 @@ app.use(express.json({ limit: '50mb' }));
 app.use("/user/users", userRoutes);
 app.use("/user", authRoutes);
 app.use('/api/course', courseRoutes);
+app.use('/api/classroom', classroomRoutes);
+
 app.use('/api/lesson', lessonRoutes);
 app.use('/api/freeTime', freeTimeRoutes);
 app.use('/api/holiday', holidayRoutes);

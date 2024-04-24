@@ -7,6 +7,7 @@ router.post('/:userId', createFreeTime);
 router.get('/:userId', getFreeTime);
 router.put('/:userId/:freeTimeId', updateFreeTime);
 router.delete('/:userId/:freeTimeId', deleteFreeTime);
+//router.delete('/delete', deleteAllFreeTimes);
 router.delete('/:userId', deleteAllFreeTimes);
 
 
