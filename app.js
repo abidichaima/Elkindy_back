@@ -11,11 +11,9 @@ const lessonRoutes = require("./routes/lessonRoute");
 const freeTimeRoutes = require("./routes/freeTimeRoute");
 const holidayRoutes = require("./routes/holidaysRoute");
 
-
 const questionRoute= require ('./routes/question');
 const quizzRoute= require ('./routes/quizz');
 const resultRoute= require ('./routes/quizzResult');
-
 
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
@@ -32,7 +30,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: 'http://localhost:3000',
+    origin: "*",
     methods: ["GET", "POST",  "DELETE", "PUT", "OPTIONS", "PUT"],
     credentials: true,
   })

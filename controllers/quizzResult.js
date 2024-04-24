@@ -121,3 +121,33 @@ exports.deleteRes = async (req, res, next) => {
     res.status(500).json({ error: error.message });
   }
 };
+exports.getQuizResultsByGradeLevel = async (req, res) => {
+  try {
+    const userGradeLevel = req.params.gradelevel; 
+    const quizResults = await QuizResult.find({ userId: { $gradelevel: userGradeLevel } })
+      .populate({
+        path: 'userId',
+        select: '-password',
+      })
+      .populate({
+        path: 'quizId',
+        populate: {
+          path: 'questions'
+        }
+      })
+      .populate({
+        path: 'responses.questionId',
+        populate: {
+          path: 'responses'
+        }
+      });
+
+    if (!quizResults || quizResults.length === 0) {
+      return res.status(404).json({ message: 'Aucun résultat de quiz trouvé pour ce gradeLevel d\'utilisateur.' });
+    }
+
+    res.status(200).json(quizResults);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
