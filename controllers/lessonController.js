@@ -119,6 +119,7 @@ module.exports.getLessonByTeacher = async (req, res, next) => {
             path: 'course',
             select: 'name -_id'
           })
+         
           .then(lessons => {
             console.log(lessons);
             res.status(200).json(lessons);
