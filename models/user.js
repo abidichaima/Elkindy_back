@@ -69,11 +69,7 @@ const userSchema = new mongoose.Schema({
     ref: 'FreeTime'
   }],
   lessons: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Lesson' }] ,
-  role: {
-    type: String,
-    enum: ["admin", "teacher", "student"],
-    default: "student",
-  },
+  courses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }] ,
   //end sami
 });
 

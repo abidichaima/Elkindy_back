@@ -1,4 +1,5 @@
 const Lesson = require("../models/lessonModel.js");
+const Course = require('../models/courseModel.js');
 const errorHandler = require("../utils/error.js");
 const { default: mongoose } = require("mongoose");
 const User = require("../models/user").User;
@@ -133,5 +134,80 @@ module.exports.getLessonByTeacher = async (req, res, next) => {
       });
   } catch(err) {
     next(err);
+  }
+};
+
+
+module.exports.getLessonByStudent = async (req, res, next) => {
+  try {
+    const id = req.header('student');
+    User.findById(id)
+      .populate('lessons')
+      .then(user => {
+      //  console.log(user);
+        Lesson.find({students:user._id})
+          .populate({
+            path: 'students',
+            select: 'firstName lastName -_id'
+          })
+          .populate({
+            path: 'teacher',
+            select: 'firstName lastName -_id'
+          })
+          .populate({
+            path: 'course',
+            select: 'name -_id'
+          })
+          .then(lessons => {
+            console.log(lessons);
+            res.status(200).json(lessons);
+          })
+          .catch(error => {
+            console.log(error);
+            res.status(400).json({ message: "Bad request" });
+          });
+      })
+      .catch(error => {
+        console.log(error);
+        res.status(400).json({ message: "Bad request" });
+      });
+  } catch(err) {
+    next(err);
+  }
+};
+
+
+
+exports.getLessonsByCourseAndLevel = async (req, res) => {
+  try {
+    const { courseName, niveau } = req.query;
+
+    // Find the course by name and niveau
+    const course = await Course.findOne({ name: courseName, niveau });
+
+    if (!course) {
+      return res.status(404).json({ message: 'Course not found' });
+    }
+
+    // Find lessons that reference the course ID
+    const lessons = await Lesson.find({ course: course._id })
+    .populate({
+      path: 'students',
+      select: 'firstName lastName -_id'
+    })
+    .populate({
+      path: 'teacher',
+      select: 'firstName lastName -_id'
+    })
+    .populate({
+      path: 'course',
+      select: 'name -_id'
+    })
+      .exec();
+
+    res.status(200).json(lessons);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
   }
 };

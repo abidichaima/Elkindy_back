@@ -60,3 +60,36 @@ module.exports.deleteCourse = async (req, res, next) => {
     next(error);
   }
 };
+
+// Associate a user with a course
+exports.enrollUserInCourse = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const courseId = req.params.courseId;
+
+    // Find the user and course documents
+    const user = await User.findById(userId);
+    const course = await Course.findById(courseId);
+
+    if (!user || !course) {
+      return res.status(404).json({ message: 'User or course not found' });
+    }
+
+    // Check if the user is already enrolled in the course
+    if (user.courses.includes(courseId)) {
+      return res.status(400).json({ message: 'User is already enrolled in this course' });
+    }
+
+    // Associate the user with the course
+    user.courses.push(courseId);
+    await user.save();
+
+    res.status(200).json({ message: 'User enrolled in the course successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
+//////////////////////////
