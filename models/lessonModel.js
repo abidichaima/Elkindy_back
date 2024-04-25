@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
         endLessonDate: { type: Date, required: true },
         course: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
         typeLesson: { type: String, required: true },
-        classRoom: { type: String }
+        classRoom: { type: mongoose.Schema.Types.ObjectId, ref: 'classroom' },
 
     });
 

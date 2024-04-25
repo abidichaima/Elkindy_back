@@ -8,7 +8,7 @@ const courseSchema = new mongoose.Schema(
         type:{
             type: String,
         },
-        student_number:{
+        capacity:{
             type: Number,
         },
         individual:{
