@@ -110,18 +110,9 @@ module.exports.getLessonByTeacher = async (req, res, next) => {
       .then(user => {
       //  console.log(user);
         Lesson.find({teacher:user._id})
-          .populate({
-            path: 'students',
-            select: 'firstName lastName -_id'
-          })
-          .populate({
-            path: 'teacher',
-            select: 'firstName lastName -_id'
-          })
-          .populate({
-            path: 'course',
-            select: 'name -_id'
-          })
+      .populate('teacher', 'firstName lastName')
+      .populate('course', 'name')
+      .populate('classroom', 'name')
          
           .then(lessons => {
             console.log(lessons);
@@ -150,18 +141,9 @@ module.exports.getLessonByStudent = async (req, res, next) => {
       .then(user => {
       //  console.log(user);
         Lesson.find({students:user._id})
-          .populate({
-            path: 'students',
-            select: 'firstName lastName -_id'
-          })
-          .populate({
-            path: 'teacher',
-            select: 'firstName lastName -_id'
-          })
-          .populate({
-            path: 'course',
-            select: 'name -_id'
-          })
+        .populate('student', 'firstName lastName')
+        .populate('course', 'name')
+        .populate('classroom', 'name')
           .then(lessons => {
             console.log(lessons);
             res.status(200).json(lessons);
@@ -195,23 +177,36 @@ exports.getLessonsByCourseAndLevel = async (req, res) => {
 
     // Find lessons that reference the course ID
     const lessons = await Lesson.find({ course: course._id })
-    .populate({
-      path: 'students',
-      select: 'firstName lastName -_id'
-    })
-    .populate({
-      path: 'teacher',
-      select: 'firstName lastName -_id'
-    })
-    .populate({
-      path: 'course',
-      select: 'name -_id'
-    })
+    .populate('student', 'firstName lastName')
+    .populate('course', 'name')
+    .populate('classroom', 'name')
       .exec();
 
     res.status(200).json(lessons);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
+
+module.exports.getLessonByClassroom = async (req, res, next) => {
+  try {
+    const id = req.header('classroom');
+    Lesson.find({ classroom: id })
+      .populate('teacher', 'firstName lastName')
+      .populate('course', 'name')
+      .populate('classroom', 'name')
+      .then(lessons => {
+        console.log(lessons);
+        res.status(200).json(lessons);
+      })
+      .catch(error => {
+        console.log(error);
+        res.status(400).json({ message: "Bad request" });
+      });
+  } catch(err) {
+    next(err);
   }
 };
