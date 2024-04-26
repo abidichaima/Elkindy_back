@@ -329,15 +329,9 @@ exports.updateUser = async (req, res, next) => {
 
     }
    // Générer un nouveau token JWT
-   const newToken = createToken(userId);
 
    // Configurez le cookie JWT avec le nouveau token
-   res.cookie('jwt', newToken, {
-     withCredentials: true,
-     httpOnly: false,
-     maxAge: maxAge * 1000,
-   });
-console.log (newToken)
+ 
     // Si tout s'est bien passé, vous pouvez renvoyer l'utilisateur mis à jour
     res.status(200).json({ message: 'Utilisateur modifié avec succès', user: updatedUser });
   } catch (error) {
