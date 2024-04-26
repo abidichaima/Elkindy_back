@@ -53,7 +53,10 @@ module.exports.getLesson = async (req, res, next) => {
 
 module.exports.getAllLessons = async (req, res, next) => {
   try {
-    const lessons = await Lesson.find().populate('teacher', 'firstName lastName').populate('course', 'name');
+    const lessons = await Lesson.find()
+      .populate('teacher', 'firstName lastName')
+      .populate('course', 'name')
+      .populate('classroom', 'name')
     console.log("All lessons retrieved");
     res.status(200).json(lessons);
   } catch (error) {
