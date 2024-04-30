@@ -6,9 +6,10 @@
   "scripts": {
     "test": "mocha test",
     "start": "nodemon app.js",
-    "build": "yarn run",
-    "build-dev": "yarn build"
-  },
+    "build": "npm install",
+    "build-dev": "npm run build"
+},
+
   "keywords": [],
   "author": "",
   "license": "ISC",
