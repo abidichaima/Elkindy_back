@@ -1,3 +1,4 @@
+const { number } = require('joi');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -36,11 +37,21 @@ const commentSchema = new Schema(
                 type: String,
                 required: true,
             },
-             CreatedAt : {
+            
+            CreatedAt: {
                 type: Date,
                 default: new Date().getTime(),
-            }
-        }]
+            },
+            satisfaction: {
+                type: Number, 
+                default: -999, 
+            },
+        }],
+        satisfaction: {
+            type: Number, 
+            default: -999, 
+        },
+
     },
     { timestamps: true }
 );
