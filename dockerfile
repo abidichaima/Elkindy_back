@@ -1,15 +1,13 @@
-
-
 FROM node:16-alpine
 
 WORKDIR /app
 
 COPY . /app
 
-RUN yarn install
+RUN npm install
 
-RUN yarn run build-dev
+RUN npm run build-dev
 
 EXPOSE 5000
 
-CMD ["yarn", "start"]
+CMD ["npm", "start"]
