@@ -1,4 +1,4 @@
-const Classroom = require("../models/classRoomModel");
+const Classroom = require("../models/classroomModel.js");
 const errorHandler = require("../utils/error.js");
 
 
