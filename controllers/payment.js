@@ -9,8 +9,8 @@ module.exports = {
             "amount": req.body.amount,
             "accept_card": "true",
             "session_timeout_secs": 1200,
-            "success_link": "http://localhost:3000/success",
-            "fail_link": "http://localhost:3000/fail",
+            "success_link": "https://deploiment.vercel.app/success",
+            "fail_link": "https://deploiment.vercel.app/fail",
             "developer_tracking_id": "8067984e-1a19-43ff-a516-5ba36a0c33a7"
         };
 
@@ -57,8 +57,8 @@ module.exports = {
             //"amount": req.body.amount,
             "accept_card": "true",
             "session_timeout_secs": 1200,
-            "success_link": "http://localhost:3000/",
-            "fail_link": "http://localhost:3000/notFound",
+            "success_link": "https://deploiment.vercel.app/",
+            "fail_link": "https://deploiment.vercel.app/notFound",
             "developer_tracking_id": "8067984e-1a19-43ff-a516-5ba36a0c33a7"
         }
         await axios 
