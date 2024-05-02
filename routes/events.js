@@ -1,4 +1,6 @@
-const Event = require('../models/event')
+//const Event = require('../models/event')
+const Event = require('../models/Event')
+
 const express = require('express');
 const router = express.Router();
 module.exports = router;
