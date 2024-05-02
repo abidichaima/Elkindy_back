@@ -163,7 +163,7 @@ module.exports.getLessonByStudent = async (req, res, next) => {
       .then(user => {
       //  console.log(user);
         Lesson.find({students:user._id})
-        .populate('student', 'firstName lastName')
+        .populate('teacher', 'firstName lastName')
         .populate('course', 'name')
         .populate('classroom', 'name')
           .then(lessons => {
