@@ -30,7 +30,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["*", "http://localhost:3000","https://elkindy-back.onrender.com"],
+    origin: ["*", "http://localhost:3000","https://elkindy-back.onrender.com","https://deploiment.vercel.app"],
     methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS", "PUT", "PATCH"],
     credentials: true,
   })
