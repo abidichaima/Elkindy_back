@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
         course: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
         typeLesson: { type: String, required: true },
         classroom: { type: mongoose.Schema.Types.ObjectId, ref: 'classroom' },
-
+        remarks: { type: String },
     });
 
 module.exports = mongoose.model('Lesson', lessonSchema);
