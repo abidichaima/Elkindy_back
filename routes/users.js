@@ -91,6 +91,7 @@ router.get("/:id/verify/:token/", async (req, res) => {
             subject: 'Reset Password Link',
             text: `http://localhost:3000/reset_password/${user._id}/${token}`
           };
+		  /// remarque remark
           
           transporter.sendMail(mailOptions, function(error, info){
             if (error) {

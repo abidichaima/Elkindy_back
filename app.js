@@ -30,18 +30,18 @@ const app = express();
 
 app.use(
   cors({
-    origin: "*",
-    methods: ["GET", "POST",  "DELETE", "PUT", "OPTIONS", "PUT", "PATCH"],
+    origin: ["*", "http://localhost:3000","https://elkindy-back.onrender.com"],
+    methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS", "PUT", "PATCH"],
     credentials: true,
   })
 );
 
 app.use(
-	cookieSession({
-		name: "session",
-		keys: ["cyberwolve"],
-		maxAge: 24 * 60 * 60 * 100,
-	})
+  cookieSession({
+    name: "session",
+    keys: ["cyberwolve"],
+    maxAge: 24 * 60 * 60 * 100,
+  })
 );
 
 app.use(session({
