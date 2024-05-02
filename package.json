@@ -6,8 +6,8 @@
   "scripts": {
     "test": "mocha test",
     "start": "node app.js",
-    "build": "npm install",
-    "build-dev": "npm run build"
+    "build": "yarn install",
+    "build-dev": "yarn run build"
 },
 
   "keywords": [],
