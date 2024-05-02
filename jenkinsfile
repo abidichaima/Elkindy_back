@@ -19,23 +19,16 @@ sh('yarn test')
 }
 }
 }  */
-         stage('SonarQube Analysis') {
-            steps {
-                script {
-                    // Define the SonarQube scanner tool
-                   def scannerHome = tool 'sonar'
-
-                   // Run the SonarQube scanner with specified parameters
-                    sh """
-                        ${scannerHome}/bin/sonar-scanner \
-                        -Dsonar.projectKey=Backend \
-                       -Dsonar.sources=. \
-                       -Dsonar.host.url=http://192.168.0.132:9000/ \
-                        -Dsonar.login=9e48fc21a879ed761af39ddacc6511d60f326187
-                    """
-                }
-            }
-        }
+        stage('SonarQube Analysis') { 
+steps{
+script { 
+def scannerHome = tool 'scanner' 
+withSonarQubeEnv {
+sh "${scannerHome}/bin/sonar-scanner" 
+}
+} 
+}
+}
 stage('Build application') {
 steps{
 script {
