@@ -5,9 +5,9 @@
   "main": "app.js",
   "scripts": {
     "test": "mocha test",
-    "start": "nodemon app.js",
-    "build": "npm install",
-    "build-dev": "npm run build"
+    "start": "node app.js",
+    "build": "yarn install",
+    "build-dev": "yarn run build"
 },
 
   "keywords": [],

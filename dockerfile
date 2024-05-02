@@ -4,10 +4,10 @@ WORKDIR /app
 
 COPY . /app
 
-RUN npm install
+RUN yarn install
 
-RUN npm run build-dev
+RUN yarn run build-dev
 
 EXPOSE 5000
 
-CMD ["npm", "start"]
+CMD ["yarn", "start"]

@@ -1,11 +1,11 @@
-import spacy
 from pymongo import MongoClient
 import sys
 import json
-import requests  # Importer le module requests
+import torch
+from sentence_transformers import SentenceTransformer, util
 
-# Charger le modèle de langue anglais
-nlp = spacy.load("en_core_web_md")
+# Charger un modèle pré-entraîné
+model = SentenceTransformer('paraphrase-MiniLM-L6-v2')
 
 def get_quiz_from_mongodb():
     try:
@@ -22,44 +22,52 @@ def get_quiz_from_mongodb():
         print("An error occurred:", e)
         return []
 
-def get_question_from_mongodb(question_id):
+def get_question_texts(question_ids):
     try:
         # Connexion à la base de données MongoDB
         client = MongoClient("mongodb+srv://artweb:elkindy@elkindy.awubkgs.mongodb.net/")
         db = client.get_database("test")
         question_collection = db.get_collection("questions")
         
-        # Récupération de la question depuis la collection MongoDB
-        question = question_collection.find_one({"_id": question_id})
-        return question
+        # Récupération des textes des questions depuis la collection MongoDB
+        question_texts = []
+        for question_id in question_ids:
+            question = question_collection.find_one({"_id": question_id})
+            if question:
+                question_texts.append(question.get("ennonce", ""))
+        return question_texts
     
     except Exception as e:
-        print("An error occurred while getting question:", e)
-        return None
-def calculate_similarity(question1, question2):
-    doc1 = nlp(question1)
-    doc2 = nlp(question2)
-    return doc1.similarity(doc2)
+        print("An error occurred while getting question texts:", e)
+        return []
+
+def get_similarity_score(question1, question2):
+    # Encoder les phrases en vecteurs de phrase
+    embedding1 = model.encode(question1, convert_to_tensor=True)
+    embedding2 = model.encode(question2, convert_to_tensor=True)
+
+    # Calculer la similarité cosinus entre les vecteurs de phrase
+    similarity_score = util.pytorch_cos_sim(embedding1, embedding2)
+
+    return similarity_score.item()
 
 def get_similar_quizzes(questions_passed, similarity_threshold=0.6):
-    similar_quizzes = set()  # Utilisez un ensemble pour éviter les doublons
-    quizzes = get_quiz_from_mongodb()  # Récupérer les quiz depuis MongoDB
+    similar_quizzes = set()
+    quizzes = get_quiz_from_mongodb()
     for quiz in quizzes:
         total_similarity_score = 0
         total_questions = len(questions_passed)
         for question_id in quiz["questions"]:
-            question = get_question_from_mongodb(question_id)
+            question = get_question_texts([question_id])
             if question:
                 for passed_question in questions_passed:
-                    if passed_question.strip() and question.get("ennonce").strip():
-                        similarity_score = calculate_similarity(passed_question, question.get("ennonce"))
+                    if passed_question.strip() and question[0].strip():
+                        similarity_score = get_similarity_score(passed_question, question[0])
                         total_similarity_score += similarity_score
-        if total_questions != 0:  # Correction pour éviter la division par zéro
-            avg_similarity_score = total_similarity_score / total_questions
-        else:
-            avg_similarity_score = 0
-        if avg_similarity_score > similarity_threshold:  # Comparaison avec le seuil de similarité
-            similar_quizzes.add(quiz.get("titre"))  # Ajoutez le titre du quiz
+                avg_similarity_score = total_similarity_score / total_questions
+                if avg_similarity_score > similarity_threshold:
+                    similar_quizzes.add(quiz.get("titre"))
+                    break  # Sortir de la boucle intérieure dès qu'un quiz est ajouté
     return similar_quizzes
 
 def main():
@@ -87,14 +95,13 @@ def main():
     
     similar_quizzes_list = list(similar_quizzes)
 
-# Créez les données à envoyer
+    # Créer les données à envoyer
     data = {"similarQuizzes": similar_quizzes_list}
     print("Données envoyées dans le fichier JSON :", data)
 
-# Écrivez les données dans un fichier JSON
+    # Écrire les données dans un fichier JSON
     with open('controllers/similar_quizzes.json', 'w') as file:
         json.dump(data, file)
-
 
 if __name__ == "__main__":
     main()
