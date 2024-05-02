@@ -17,6 +17,28 @@ module.exports.createLesson = async (req, res, next) => {
   }
 };
 
+
+// Controller function to add remarks to a lesson
+module.exports.addRemarks = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { remarks } = req.body;
+
+    // Find the lesson by ID
+    const lesson = await Lesson.findById(id);
+
+    if (!lesson) {
+      return res.status(404).json({ message: 'Lesson not found' });
+    }
+    lesson.remarks = remarks;
+    await lesson.save();
+    return res.status(200).json({ message: 'Remarks added successfully', lesson });
+  } catch (error) {
+    console.error('Error adding remarks:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
     
 
 module.exports.updateLesson = async (req, res, next) => {
@@ -141,7 +163,7 @@ module.exports.getLessonByStudent = async (req, res, next) => {
       .then(user => {
       //  console.log(user);
         Lesson.find({students:user._id})
-        .populate('student', 'firstName lastName')
+        .populate('teacher', 'firstName lastName')
         .populate('course', 'name')
         .populate('classroom', 'name')
           .then(lessons => {
