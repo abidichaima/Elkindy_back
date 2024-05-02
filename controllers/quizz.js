@@ -7,7 +7,8 @@ const fs = require('fs');
 const path = require('path');
 const { log } = require('console');
 const QuizResult = require('../models/QuizResult');
-
+const { spawn } = require('child_process');
+const { exec } = require('child_process');
 /*exports.createQuizz = async (req, res, next) => {
   try {
     const { titre, description, duree, dateDebut, dateFin,level ,questions,tentative } = req.body;
@@ -180,5 +181,66 @@ console.log("anc",req.body.questions);
   } catch (error) {
     console.error('Erreur lors de la modification du quizz :', error);
     res.status(500).json({ error: error.message });
+  }
+};
+
+
+
+
+
+exports.getQuestions = async (req, res, next) => {
+ 
+    
+    try {
+      const quizz = await Quizz.findOne({ _id: req.params.id }).populate({
+        path: 'questions',
+      });
+      const formattedQuestions = quizz.questions.map(question => question.ennonce);
+
+  console.log("formattedQuestions",formattedQuestions);
+        
+
+    // Exécuter le script Python pour récupérer les questions du quiz spécifié
+    const pythonProcess = spawn('python', [path.join(__dirname, 'ScriptQuizz', 'script.py'), ...formattedQuestions]);
+
+    pythonProcess.stdout.on('data', (data) => {
+      console.log(`stdout: ${data}`);
+    });
+
+    pythonProcess.stderr.on('data', (data) => {
+      console.error(`stderr: ${data}`);
+    });
+
+    pythonProcess.on('close', (code) => {
+      if (code === 0) {
+        // Si le script Python se termine avec succès, renvoyer une réponse avec les questions récupérées
+        res.status(200).json({ success: true, message: 'Questions retrieved successfully' });
+      } else {
+        res.status(500).json({ success: false, message: 'Failed to retrieve questions' });
+      }
+    });
+  } catch (error) {
+    console.error('Error getting questions:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+exports.getSimilaires = async (req, res, next) => {
+  try {
+    // Chemin du fichier contenant les données
+    const filePath = path.join(__dirname, 'similar_quizzes.json');
+
+    // Lire les données du fichier JSON
+    const fileContent = fs.readFileSync(filePath, 'utf8');
+    const similarQuizzes = JSON.parse(fileContent);
+
+    // Traitez les données comme vous le souhaitez
+    console.log("Données récupérées depuis le fichier JSON :", similarQuizzes);
+
+    // Envoyez une réponse indiquant que les données ont été récupérées avec succès
+    res.status(200).json({ similarQuizzes });
+  } catch (error) {
+    console.error("Une erreur s'est produite :", error);
+    res.status(500).json({ message: "Une erreur s'est produite lors du traitement des données." });
   }
 };
