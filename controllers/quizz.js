@@ -214,7 +214,7 @@ exports.getQuestions = async (req, res, next) => {
     pythonProcess.on('close', (code) => {
       if (code === 0) {
         // Si le script Python se termine avec succès, renvoyer une réponse avec les questions récupérées
-        res.status(200).json({ success: true, message: 'Questions retrieved successfully' });
+        res.status(200).json({ success: true, message: 'Questions retrieved successfully'});
       } else {
         res.status(500).json({ success: false, message: 'Failed to retrieve questions' });
       }
