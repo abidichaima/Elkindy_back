@@ -1,7 +1,7 @@
 pipeline{
 agent any
 environment {
-        registryCredentials = "nexus"
+        registryCredentials = "nouveau"
         registry = "192.168.0.132:8083"
         }
 stages {
