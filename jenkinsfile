@@ -59,11 +59,11 @@ sh('yarn run build')
                 } 
             } 
         }
-/*
+
         stage("Run Prometheus"){
             steps{
                 script{
-                    sh('docker start b53869c945f8')
+                    sh('docker start 68b3d25dd708')
                 }
             }
         }
@@ -71,11 +71,11 @@ sh('yarn run build')
         stage("Run Grafana"){ 
             steps{
                 script{
-                    sh('docker start 661193540d0d')
+                    sh('docker start adc17e8c3f5a')
                 }
             }
         }   
 
-        */    
+           
 }
 }
