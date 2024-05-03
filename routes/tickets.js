@@ -110,13 +110,13 @@ router.get('/:id', async (req, res, next) => {
   
       if (savedTicket) {
         const eventId = savedTicket.event_id;
-        const eventResponse = await axios.get(`http://localhost:4000/events/${eventId}`);
+        const eventResponse = await axios.get(`https://elkindy-back.onrender.com/events/${eventId}`);
         const event = eventResponse.data.event;
   
         event.tickets = event.tickets + savedTicket.number;
   
         // Use a PUT request to update the event
-        const updatedEventResponse = await axios.put(`http://localhost:4000/events/updateTickets/${eventId}`, {
+        const updatedEventResponse = await axios.put(`https://elkindy-back.onrender.com/events/updateTickets/${eventId}`, {
           tickets: event.tickets,
         });
         console.log("Ticket saved:", savedTicket);

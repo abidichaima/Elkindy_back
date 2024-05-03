@@ -89,8 +89,9 @@ router.get("/:id/verify/:token/", async (req, res) => {
             from: 'chaimaabidi1406@gmail.com',
             to: email,
             subject: 'Reset Password Link',
-            text: `http://localhost:3000/reset_password/${user._id}/${token}`
+            text: `https://deploiment.vercel.app/reset_password/${user._id}/${token}`
           };
+		  /// remarque remark
           
           transporter.sendMail(mailOptions, function(error, info){
             if (error) {
