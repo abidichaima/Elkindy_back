@@ -60,15 +60,7 @@ sh('npm run build')
             }
         } 
 
-
-          stage('Run application ') {
-            steps{ 
-                script { 
-                    sh('docker-compose up -d ')  
-                } 
-            } 
-        }
-                 stage('Deploy to Nexus') {
+                stage('Deploy to Nexus') {
             steps{
                 script {
                  docker.withRegistry("http://"+registry,registryCredentials ) {
@@ -77,6 +69,14 @@ sh('npm run build')
                         }
                 }
         }
+          stage('Run application ') {
+            steps{ 
+                script { 
+                    sh('docker-compose up -d ')  
+                } 
+            } 
+        }
+ 
 
 
            
