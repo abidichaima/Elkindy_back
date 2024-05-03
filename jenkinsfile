@@ -61,10 +61,10 @@ sh('npm run build')
             } 
         }
 
-        /*stage("Run Prometheus"){
+       /* stage("Run Prometheus"){
             steps{
                 script{
-                    sh('docker start 68b3d25dd708')
+                    sh('docker start 34c5b55e764c ')
                 }
             }
         }
@@ -72,7 +72,7 @@ sh('npm run build')
         stage("Run Grafana"){ 
             steps{
                 script{
-                    sh('docker start adc17e8c3f5a')
+                    sh('docker start 90530ff98553')
                 }
             }
         }   */
