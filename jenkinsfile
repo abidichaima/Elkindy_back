@@ -37,6 +37,7 @@ sh('npm run build')
 }
 }
 }
+
  stage('Building images (node and mongo)') {
             steps{
                 script {
@@ -44,27 +45,22 @@ sh('npm run build')
                 }
             }
         }
-        /* stage('Deploy to Nexus') {
+        stage("Run Prometheus"){
             steps{
-                script {
-                 docker.withRegistry("http://"+registry,registryCredentials ) {
-                    sh('docker push $registry/nodemongoapp:6.0 ')
-                             }
-                        }
+                script{
+                    sh('docker start 3f3c02c31781 ')
                 }
-        }*/
-      stage('Deploy to Nexus') {
-    steps {
-        script {
-            def NEXUS_USERNAME = 'admin'
-            def NEXUS_PASSWORD = '123456789'
-            
-            docker.withRegistry("http://${registry}", NEXUS_USERNAME, NEXUS_PASSWORD) {
-                sh('docker push $registry/nodemongoapp:6.0')
             }
         }
-    }
-}
+             stage("Run Grafana"){ 
+            steps{
+                script{
+                    sh('docker start eab7a53d5637')
+                }
+            }
+        } 
+
+
           stage('Run application ') {
             steps{ 
                 script { 
@@ -72,22 +68,16 @@ sh('npm run build')
                 } 
             } 
         }
-
-       /* stage("Run Prometheus"){
+                 stage('Deploy to Nexus') {
             steps{
-                script{
-                    sh('docker start 34c5b55e764c ')
+                script {
+                 docker.withRegistry("http://"+registry,registryCredentials ) {
+                    sh('docker push $registry/nodemongoapp:6.0 ')
+                             }
+                        }
                 }
-            }
         }
 
-        stage("Run Grafana"){ 
-            steps{
-                script{
-                    sh('docker start 90530ff98553')
-                }
-            }
-        }   */
 
            
 }
