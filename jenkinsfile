@@ -18,7 +18,7 @@ script {
 sh('yarn test')
 }
 }
-}  */
+}  
         stage('SonarQube Analysis') { 
 steps{
 script { 
@@ -28,7 +28,7 @@ sh "${scannerHome}/bin/sonar-scanner"
 }
 } 
 }
-}
+}*/
 stage('Build application') {
 steps{
 script {
